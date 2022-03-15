@@ -101,10 +101,16 @@ def main(output, youtube_url, disable_auto_play, ffmpeg_path):
         click.echo("Invalid youtube url!")
         return
 
-    print(output)
-    print(youtube_url)
-    print(disable_auto_play)
-    pass
+    # Processing the request
+    process(output, youtube_url, ffmpeg_path)
+
+    # Completed state
+    if not disable_auto_play:
+        click.secho("Playing the music...\n", fg="yellow")
+        click.launch(output)
+        click.secho(f"Output File: {output}", fg="green")
+    else:
+        click.secho(f"Output file: {output}")
 
 
 if __name__ == "__main__":
