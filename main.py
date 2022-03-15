@@ -4,8 +4,6 @@ import os, tempfile
 
 AUDIO_SAMPLE_RATE = 44100
 FILE_FORMAT = "mp3"
-output_path = ""
-temp_path = os.path.join(tempfile.gettempdir(), f"{os.urandom(24).hex()}.{FILE_FORMAT}")
 
 
 def ffmpeg_error():
@@ -35,6 +33,12 @@ def ffmpeg_error():
 )
 @click.option("--ffmpeg-path", "-fp", help="Path to FFmpeg")
 def main(output, youtube_url, disable_auto_play, ffmpeg_path):
+
+    # Using temp file as path if no output path is provided
+    if not output:
+        output = os.path.join(
+            tempfile.gettempdir(), f"{os.urandom(24).hex()}.{FILE_FORMAT}"
+        )
 
     # Check if ffmpeg is available in current path
     if not ffmpeg_path:
