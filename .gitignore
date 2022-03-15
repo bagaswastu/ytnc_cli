@@ -170,8 +170,7 @@ pip-selfcheck.json
 
 # End of https://www.toptal.com/developers/gitignore/api/venv,python
 
-# Visual Studio Code
+# Others
 .vscode/
-
-# etc
 etc/
+share/
