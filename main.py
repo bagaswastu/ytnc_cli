@@ -47,7 +47,7 @@ def main(output, youtube_url, disable_auto_play, ffmpeg_path):
         return
 
     # Validation youtube url
-    if "youtube.com" not in youtube_url:
+    if "youtube.com/watch?v=" not in youtube_url:
         click.echo("Invalid youtube url!")
         return
 
