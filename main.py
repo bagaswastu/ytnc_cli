@@ -1,9 +1,55 @@
 import subprocess
 import click
 import os, tempfile
+import youtube_dl
 
 AUDIO_SAMPLE_RATE = 44100
 FILE_FORMAT = "mp3"
+
+
+def process(output_path: str, youtube_url: str, ffmpeg_path: str):
+
+    dl_opts = {
+        "format": "bestaudio[asr=%d]" % AUDIO_SAMPLE_RATE,
+        "audioformat": FILE_FORMAT,
+        "noplaylist": True,
+        "quiet": True,
+    }
+
+    music_url = ""
+    with youtube_dl.YoutubeDL(dl_opts) as ytdl:
+        click.secho("Getting info...\n", fg="yellow")
+        info = ytdl.extract_info(youtube_url, download=False)
+        music_url = info["formats"][0]["url"]
+        music_title = info["title"]
+        music_uploader = info["uploader"]
+        total_size = info["filesize"]
+
+        # Convert total size to MB
+        total_size = round(total_size / (1024 * 1024), 2)
+
+        click.echo(f"Title\t\t: " + click.style(music_title, fg="magenta"))
+        click.echo(f"Uploader\t: " + click.style(music_uploader, fg="magenta"))
+        click.echo(f"Size\t\t: " + click.style(f"{total_size} MB", fg="magenta"))
+
+    click.secho("\nDownload & converting...\n", fg="yellow")
+    ffmpeg_command = [
+        ffmpeg_path,
+        "-y",  # Always overwrite
+        "-i",
+        music_url,
+        "-filter:a",
+        "asetrate=44100*1.265,aresample=44100",  # Increase sample rate and resample at original rate
+        output_path,
+    ]
+
+    command_output = subprocess.run(ffmpeg_command, stderr=subprocess.PIPE)
+
+    # check error
+    if command_output.returncode != 0:
+        click.secho("Error: " + command_output.stderr.decode("utf-8"), fg="red")
+
+    click.secho("\nCompleted!", fg="yellow")
 
 
 def ffmpeg_error():
