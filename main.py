@@ -7,7 +7,7 @@ AUDIO_SAMPLE_RATE = 44100
 FILE_FORMAT = "mp3"
 
 
-def process(output_path: str, youtube_url: str, ffmpeg_path: str):
+def process(speed: float, output_path: str, youtube_url: str, ffmpeg_path: str):
 
     dl_opts = {
         "format": "bestaudio[asr=%d]" % AUDIO_SAMPLE_RATE,
@@ -39,7 +39,7 @@ def process(output_path: str, youtube_url: str, ffmpeg_path: str):
         "-i",
         music_url,
         "-filter:a",
-        "asetrate=44100*1.265,aresample=44100",  # Increase sample rate and resample at original rate
+        f"asetrate=44100*{speed},aresample=44100",  # Increase sample rate and resample at original rate
         output_path,
     ]
 
@@ -69,6 +69,9 @@ def ffmpeg_error():
 @click.command()
 @click.argument("youtube_url")
 @click.option(
+    "--speed", "-s", default="1.25", help="Change speed of audio. (default: 1.25)"
+)
+@click.option(
     "--disable-auto-play",
     "-dap",
     is_flag=True,
@@ -78,7 +81,13 @@ def ffmpeg_error():
     "--output", "-o", help="Output path for the file.", type=click.Path(exists=True)
 )
 @click.option("--ffmpeg-path", "-fp", help="Path to FFmpeg")
-def main(output, youtube_url, disable_auto_play, ffmpeg_path):
+def main(speed, output, youtube_url, disable_auto_play, ffmpeg_path):
+    # Convert speed to float
+    try:
+        speed = float(speed)
+    except ValueError:
+        click.echo("Speed must be a number.")
+        return
 
     # Using temp file as path if no output path is provided
     if not output:
@@ -102,7 +111,7 @@ def main(output, youtube_url, disable_auto_play, ffmpeg_path):
         return
 
     # Processing the request
-    process(output, youtube_url, ffmpeg_path)
+    process(speed, output, youtube_url, ffmpeg_path)
 
     # Completed state
     if not disable_auto_play:
