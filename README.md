@@ -1,12 +1,15 @@
 # Youtube Nightcore CLI (ytnc)
 ytnc is a CLI application for downloading YouTube videos, converting them into nightcore music, and playing it to your default audio player.
-
 You can also use it to convert into a slowed-reverb type of music by adding `--speed` option to `0.9`.
 
-You need to have FFmpeg installed on your system to use this application.
+# Demo 🔊
+https://user-images.githubusercontent.com/67826350/158567351-441789c0-2c6e-4612-a98e-c770a7dac403.mp4
 
+## Download
+You need to have FFmpeg installed on your system to use this application.
 [Download ytnc (windows only)](https://github.com/bagaswastu/ytnc_cli/releases)
 
+## Help
 ```
 $ ytnc --help
 Usage: ytnc.exe [OPTIONS] YOUTUBE_URL
@@ -20,7 +23,7 @@ Options:
 ```
 
 ## How it works
-The application will find & download the video using `youtube-dl`, and then the app will download the `.mp3` file and filter it using [FFmpeg](https://github.com/FFmpeg/FFmpeg).
+The application will find the YouTube video using `youtube-dl`, then download the `.mp3` file and filter it using [FFmpeg](https://github.com/FFmpeg/FFmpeg).
 
 ## Run the project
 - Clone this repository
