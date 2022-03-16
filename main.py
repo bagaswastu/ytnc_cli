@@ -66,7 +66,7 @@ def ffmpeg_error():
     )
 
 
-@click.command()
+@click.command(name="ytdl")
 @click.argument("youtube_url")
 @click.option(
     "--speed", "-s", default="1.25", help="Change speed of audio. (default: 1.25)"
