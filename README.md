@@ -37,5 +37,5 @@ The application will find the YouTube video using `youtube-dl`, then download th
   ```
 - And then run the app 
   ```bash
-  $ python ytnc.py
+  $ python main.py
   ```
