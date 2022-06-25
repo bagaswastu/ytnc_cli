@@ -7,7 +7,9 @@ AUDIO_SAMPLE_RATE = 44100
 FILE_FORMAT = "mp3"
 
 
-def process(speed: float, output_path: str, youtube_url: str, ffmpeg_path: str):
+def process(
+    speed: float, output_path: str, youtube_url: str, ffmpeg_path: str, lofi: float
+):
 
     dl_opts = {
         "format": "bestaudio[asr=%d]" % AUDIO_SAMPLE_RATE,
@@ -33,13 +35,18 @@ def process(speed: float, output_path: str, youtube_url: str, ffmpeg_path: str):
         click.echo(f"Size\t\t: " + click.style(f"{total_size} MB", fg="magenta"))
 
     click.secho("\nDownload & converting...\n", fg="yellow")
+
+    more_filter = ""
+    if lofi:
+        more_filter += f",atempo=0.8"
+
     ffmpeg_command = [
         ffmpeg_path,
         "-y",  # Always overwrite
         "-i",
         music_url,
         "-filter:a",
-        f"asetrate=44100*{speed},aresample=44100",  # Increase sample rate and resample at original rate
+        f"asetrate=44100*{speed},aresample=44100{more_filter}",  # Increase sample rate and resample at original rate
         output_path,
     ]
 
@@ -80,8 +87,21 @@ def ffmpeg_error():
 @click.option(
     "--output", "-o", help="Output path for the file.", type=click.Path(exists=True)
 )
+@click.option(
+    "--lofi",
+    help="Make the audio more slow by changing the playback speed to 0.8.",
+    is_flag=True,
+    default=False,
+)
 @click.option("--ffmpeg-path", "-fp", help="Path to FFmpeg")
-def main(speed, output, youtube_url, disable_auto_play, ffmpeg_path):
+def main(
+    speed,
+    output,
+    youtube_url,
+    disable_auto_play,
+    ffmpeg_path,
+    lofi,
+):
     # Convert speed to float
     try:
         speed = float(speed)
@@ -111,7 +131,7 @@ def main(speed, output, youtube_url, disable_auto_play, ffmpeg_path):
         return
 
     # Processing the request
-    process(speed, output, youtube_url, ffmpeg_path)
+    process(speed, output, youtube_url, ffmpeg_path, lofi)
 
     # Completed state
     if not disable_auto_play:

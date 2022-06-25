@@ -18,6 +18,8 @@ Options:
   -s, --speed TEXT           Change speed of audio. (default: 1.25)
   -dap, --disable-auto-play  Don't play the music after download & convert.
   -o, --output PATH          Output path for the file.
+  --lofi                     Make the audio more slow by changing the playback
+                             speed to 0.8.
   -fp, --ffmpeg-path TEXT    Path to FFmpeg
   --help                     Show this message and exit.
 ```
